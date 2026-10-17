@@ -37,6 +37,13 @@ const STORY_EVENTS=[
 {id:'apology',icon:'🎙️',title:'Comentário mal interpretado',story:'Um trecho de sua live está circulando fora de contexto. Parte do público se sentiu ofendida.',options:[['Explicar e ouvir as críticas',8,115,0,'Você explicou o contexto e reconheceu os sentimentos dos espectadores.'],['Zombar de quem reclamou',-14,-105,0,'Seu deboche agravou a discussão nas redes.'],['Apagar tudo sem explicar',-5,-45,0,'O silêncio e a remoção geraram ainda mais especulação.']]},
 {id:'lostphone',icon:'📱',title:'Celular quebrado',story:'Seu celular caiu durante uma gravação. O conserto é caro e você tem conteúdo para publicar.',options:[['Consertar e ser transparente',3,20,-90,'Você explicou a pausa e voltou a gravar com o aparelho reparado.'],['Improvisar um vídeo criativo',5,95,0,'Um vídeo simples contando o imprevisto conquistou novos fãs.'],['Inventar uma história dramática',-8,135,0,'O exagero chamou atenção, mas abalou a confiança dos fãs.']]},
 {id:'giveaway',icon:'🎁',title:'Sorteio suspeito',story:'Uma página desconhecida oferece um sorteio e pede dados pessoais dos seus seguidores.',options:[['Alertar sobre o risco',8,95,0,'Você avisou sobre os sinais de golpe e protegeu sua comunidade.'],['Compartilhar pelo engajamento',-16,170,100,'Seguidores denunciaram o link suspeito e sua reputação caiu.'],['Pesquisar antes de divulgar',5,45,0,'Você investigou a página e decidiu não promovê-la.']]},
+{id:'internet',icon:'📶',title:'Internet caiu',story:'A conexão caiu no momento em que você ia postar um vídeo importante.',options:[['Avisar o público com calma',3,18,0,'Você avisou que o conteúdo sairia assim que a conexão voltasse.'],['Culpar os seguidores',-9,-35,0,'A reclamação injusta causou críticas.'],['Preparar vídeos offline',5,30,0,'Você usou o tempo para planejar os próximos vídeos.']]},
+{id:'friend',icon:'🤝',title:'Amigo quer aparecer',story:'Um amigo pede para participar de um vídeo, mas está nervoso com os comentários.',options:[['Perguntar se ele está confortável',5,25,0,'Seu cuidado tornou a gravação mais divertida.'],['Gravar escondido',-11,45,0,'O amigo ficou chateado por aparecer sem consentimento.'],['Gravar apenas você',1,8,0,'Você respeitou a decisão dele.']]},
+{id:'editing',icon:'💻',title:'Edição deu errado',story:'Você perdeu horas de edição após o programa travar.',options:[['Recomeçar com uma ideia simples',4,35,-10,'Sua criatividade salvou a publicação.'],['Postar de qualquer jeito',-3,-12,0,'A pressa prejudicou a qualidade.'],['Aprender a fazer backups',6,15,-20,'Você investiu em organização para evitar novas perdas.']]},
+{id:'schoolwork',icon:'📖',title:'Prova e gravação',story:'Uma prova importante caiu no mesmo dia de uma gravação planejada.',options:[['Estudar e reagendar',5,10,0,'Você equilibrou sua vida e seu conteúdo.'],['Ignorar a prova',-7,30,0,'A decisão prejudicou suas responsabilidades.'],['Planejar um vídeo mais curto',3,20,0,'Você conseguiu conciliar as duas tarefas.']]},
+{id:'fakeprofile',icon:'🛡️',title:'Perfil falso',story:'Um perfil está se passando por você e mandando mensagens para seguidores.',options:[['Avisar e denunciar o perfil',8,50,0,'Você protegeu sua comunidade de possíveis golpes.'],['Ignorar o problema',-4,-20,0,'Mais fãs ficaram confusos com o perfil falso.'],['Atacar a conta em público',-5,65,0,'A briga gerou polêmica sem resolver tudo.']]},
+{id:'viralclip',icon:'🎞️',title:'Um corte da live viralizou',story:'Um trecho engraçado da sua transmissão começou a circular nas redes.',options:[['Agradecer e postar os créditos',6,115,0,'Você valorizou quem ajudou a divulgar o vídeo.'],['Dizer que criou tudo sozinho',-6,140,0,'O editor original reclamou da falta de créditos.'],['Criar uma continuação',4,95,-10,'Você aproveitou a oportunidade com criatividade.']]},
+{id:'community',icon:'💬',title:'Sugestão dos fãs',story:'Seguidores pedem um formato novo de vídeo que você nunca tentou.',options:[['Testar a ideia com calma',5,65,-10,'O público gostou de ser ouvido.'],['Zombar da sugestão',-8,-40,0,'Alguns seguidores ficaram decepcionados.'],['Fazer uma enquete',4,40,0,'A enquete ajudou a planejar o conteúdo.']]},
 {id:'burnout',icon:'🧠',title:'Pressão para postar',story:'Você está cansado, mas o público exige publicações todos os dias.',options:[['Fazer uma pausa comunicada',5,-15,0,'Você explicou que precisava descansar, e a maioria compreendeu.'],['Prometer vídeos impossíveis',-6,60,0,'As promessas não foram cumpridas e vieram reclamações.'],['Organizar um calendário realista',7,80,0,'Você publicou um plano sustentável e ganhou confiança.']]}
 ];
 const money=n=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(n);const num=n=>Math.floor(n).toLocaleString('pt-BR');const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));const escapeHtml=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -51,9 +58,26 @@ function pushNotice(icon,title,message,kind='info',target='social'){
  const banner=$('socialBanner');if(banner&&gameActive){banner.innerHTML=`<b>${escapeHtml(icon+' '+title)}</b><span>${escapeHtml(message)}</span><small>Toque para abrir →</small>`;banner.hidden=false;banner.onclick=()=>{banner.hidden=true;openApp(target)};clearTimeout(window.bannerTimeout);window.bannerTimeout=setTimeout(()=>{banner.hidden=true},6500)}
 }
 function updateNoticeBadge(){const b=$('noticeBadge');if(!b)return;const n=(s.notices||[]).filter(x=>x.kind==='comment'&&!x.read).length;b.textContent=n>99?'99+':n;b.hidden=!n}
+// Recompensas narrativas proporcionais à dimensão do público, com início difícil.
+function eventFollowers(raw,current){
+ const n=Number(raw)||0;
+ if(!n)return 0;
+ const audience=Math.max(0,Number(current)||0);
+ const factor=audience<100?.045:audience<1000?.11:audience<10000?.28:audience<100000?.55:audience<1000000?.8:1;
+ const magnitude=Math.abs(n)*factor*(.85+Math.random()*.30);
+ const rounded=Math.floor(magnitude)+(Math.random()<magnitude%1?1:0);
+ return Math.sign(n)*rounded;
+}
 function scheduleStory(trigger='day'){
  if(!gameActive)return;ensureStory();if(s.storyQueue.length)return;
- const count=s.storyHistory.length;const available=STORY_EVENTS.filter(e=>!s.storyHistory.slice(-6).some(h=>h.id===e.id));const pool=available.length?available:STORY_EVENTS;const story=pool[rand(0,pool.length-1)];
+ // Eventos recém-resolvidos têm peso menor, sem excluir os eventos ainda não vistos.
+ const recent=new Set(s.storyHistory.slice(0,5).map(h=>h.id));
+ const unseen=new Set(STORY_EVENTS.filter(e=>!s.storyHistory.some(h=>h.id===e.id)).map(e=>e.id));
+ const weighted=STORY_EVENTS.map(e=>({event:e,weight:unseen.has(e.id)?6:recent.has(e.id)?0.1:2}));
+ const total=weighted.reduce((sum,item)=>sum+item.weight,0);
+ let draw=Math.random()*total;
+ let story=weighted[weighted.length-1].event;
+ for(const item of weighted){draw-=item.weight;if(draw<=0){story=item.event;break}}
  s.storyQueue.push({id:story.id,key:Date.now()+Math.random(),trigger});pushNotice(story.icon,'Novo acontecimento',story.title,'story','stories');save();showStory();
 }
 function getPendingStory(){
