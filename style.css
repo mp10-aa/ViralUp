@@ -63,3 +63,18 @@
 .room-prop.camera::before{content:'';position:absolute;left:8px;top:4px;width:10px;height:10px;border-radius:50%;background:#6382c9}.room-prop.camera::after{content:'';position:absolute;left:10px;bottom:-22px;width:3px;height:22px;background:#bcc5d2;box-shadow:-8px 22px 0 0 #bcc5d2,8px 22px 0 0 #bcc5d2}
 .room-prop.rgb{left:0;right:0;height:4px;background:linear-gradient(90deg,#f56cda,#8f76ff,#63d8ff);opacity:.85;box-shadow:0 0 12px rgba(176,115,255,.55)}
 .room-prop.rgb-top{top:0}.room-prop.rgb-bottom{bottom:0}.room-prop.studio-glow{inset:10px 16px auto 16px;height:24px;background:linear-gradient(180deg,rgba(255,255,255,.14),transparent);z-index:2}
+
+.recording-locked{opacity:.78;border-style:dashed}.recording-locked .ph-chip{background:#45415c;color:#ddd3ee}
+
+/* ViralUp 8.0 — avatar em primeiro plano, com presença no ambiente */
+.room-scene{height:clamp(240px,26vw,310px);overflow:hidden;position:relative}
+.room-bg{background-position:center center;filter:saturate(.96) contrast(1.02) brightness(.83);transform:scale(1.01)}
+.room-depth{background:linear-gradient(180deg,rgba(6,8,18,.12),transparent 45%,rgba(4,6,15,.24))}
+.room-character-overlay{align-items:flex-end;justify-content:center;padding-bottom:7px;z-index:9}
+.room-character{width:clamp(142px,19vw,188px);max-width:49%;transform:translateY(8px);filter:drop-shadow(0 6px 3px rgba(0,0,0,.28)) drop-shadow(0 18px 18px rgba(0,0,0,.35))}
+.room-character svg{width:100%;height:auto;max-height:none}
+.room-character-overlay::after{width:100px;height:16px;bottom:6px;background:rgba(0,0,0,.38);filter:blur(7px)}
+.room-ground{height:50px;z-index:5;opacity:.5}
+.creator-fields select{width:100%}
+.creator-fields label[hidden]{display:none!important}
+@media(max-width:650px){.room-scene{height:245px}.room-character{width:158px;max-width:48%}}
